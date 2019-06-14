@@ -1,0 +1,15 @@
+[DEFAULT]
+timeout = 20
+interval = 30
+notification = 
+socket_path = /tmp/
+
+[host1_normal]
+smtp_host = host1.domain.tld
+from = mmf@localhost
+to = mmf@localhost
+
+[host2_normal]
+smtp_host = host2.domain.tld
+from = mmf@localhost
+to = mmf@localhost
