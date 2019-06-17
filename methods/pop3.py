@@ -9,7 +9,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import mail
 import send_smtp
-import recv_ipc
+import recv_pop3
 
 def run(runtime, config):
     try:
@@ -23,7 +23,7 @@ def run(runtime, config):
         send_smtp.send(runtime, config, msg.as_string())
         if runtime['ThreadStopFlag'] is True: return
 
-        recv_ipc.recv(runtime, config)
+        recv_pop3.recv(runtime, config)
         if runtime['ThreadStopFlag'] is True: return
 
         end = datetime.datetime.now()
@@ -38,3 +38,5 @@ def run(runtime, config):
             err[1],
             ','.join(traceback.format_tb(err[2]))
         ))
+
+

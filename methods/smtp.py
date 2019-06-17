@@ -9,28 +9,24 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import mail
 import send_smtp
-import recv_ipc
+import smtplib
 
 def run(runtime, config):
     try:
         token = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(16))
         config['token'] = token
 
+        config['sender'] = "{}.{rand}@{}".format(*(config['sender'].split('@')), rand = token)
         msg = mail.Mail(**config)
-        runtime['log'].info('generate token {}'.format(token))
-        start = datetime.datetime.now()
+        try:
+            send_smtp.send(runtime, config, msg.as_string())
+        except smtplib.SMTPRecipientsRefused as msg:
+            if config['smtp_except'] in str(msg):
+                runtime['log'].info('{} successfully get {}'.format(config['name'], msg))
+                return
+            raise
 
-        send_smtp.send(runtime, config, msg.as_string())
-        if runtime['ThreadStopFlag'] is True: return
-
-        recv_ipc.recv(runtime, config)
-        if runtime['ThreadStopFlag'] is True: return
-
-        end = datetime.datetime.now()
-        rtt = end - start
-        runtime['log'].info('retrieve token {}, rtt {}'.format(token, rtt.total_seconds()))
-    except TimeoutError:
-        runtime['log'].error('Email {token} Timeout!'.format(token = token))
+        runtime['log'].error('email sent'.format(token))
     except:
         err = sys.exc_info()
         runtime['log'].error('Unexpected error {}:{}, tb: {}'.format(

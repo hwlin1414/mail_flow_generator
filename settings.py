@@ -41,7 +41,7 @@ def case_check(case):
     case['recipients'] = [ x.strip() for x in case['recipients'].split(',') ]
     case['notification'] = [ x.strip() for x in case['notification'].split(',') ]
 
-def read(path):
+def read(path = PATH_DEFAULT):
     parser = configparser.ConfigParser()
     parser.read(path)
 
