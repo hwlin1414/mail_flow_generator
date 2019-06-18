@@ -16,7 +16,6 @@ def run(runtime, config):
         token = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(16))
         config['token'] = token
 
-        config['sender'] = "{}.{rand}@{}".format(*(config['sender'].split('@')), rand = token)
         msg = mail.Mail(**config)
         try:
             send_smtp.send(runtime, config, msg.as_string())
