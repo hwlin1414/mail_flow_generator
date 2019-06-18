@@ -3,6 +3,7 @@ import logging.handlers
 
 # format consts
 FORMAT = '%(name)s %(threadName)s (%(filename)s:%(lineno)s %(funcName)s): [%(levelname)s] %(message)s'
+#FORMAT = '%(name)s [%(levelname)s] %(message)s'
 FORMAT_TS = "%(asctime)s {}".format(FORMAT)
 DATEFMT = "%Y-%m-%d %H:%M:%S"
 

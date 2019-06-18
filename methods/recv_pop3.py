@@ -35,6 +35,5 @@ def recv(runtime, config):
         if now >= end: break
         time.sleep(runtime['CheckFlagPeriod'])
 
-    pop3.quit()
     if runtime['ThreadStopFlag'] is False:
         raise TimeoutError('POP3 timeout')

@@ -20,9 +20,11 @@ def run(runtime, config):
         msg = mail.Mail(**config)
         try:
             send_smtp.send(runtime, config, msg.as_string())
-        except smtplib.SMTPRecipientsRefused as msg:
-            if config['smtp_except'] in str(msg):
-                runtime['log'].info('{} successfully get {}'.format(config['name'], msg))
+        except smtplib.SMTPRecipientsRefused as errmsg:
+            if config['smtp_except'] in str(errmsg):
+                for r in errmsg.recipients:
+                    msg = errmsg.recipients[r][1].decode('UTF-8')
+                    runtime['log'].info('{} successfully get "{}"'.format(config['name'], msg))
                 return
             raise
 
