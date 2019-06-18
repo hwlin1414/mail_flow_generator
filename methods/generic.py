@@ -28,9 +28,9 @@ def run(runtime, config):
 
         end = datetime.datetime.now()
         rtt = end - start
-        runtime['log'].info('retrieve token {}, rtt {}'.format(token, rtt.total_seconds()))
+        runtime['log'].info('retrieve token {}, rtt {:.2f}'.format(token, rtt.total_seconds()))
     except TimeoutError:
-        runtime['log'].error('Email {token} Timeout!'.format(token = token))
+        runtime['log'].error('Email {} Timeout!'.format(token))
     except:
         err = sys.exc_info()
         runtime['log'].error('Unexpected error {}:{}, tb: {}'.format(
