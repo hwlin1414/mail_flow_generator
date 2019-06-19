@@ -3,7 +3,7 @@ import configparser
 
 PATH_DEFAULT = os.path.dirname(os.path.abspath(__file__)) + '/mfg.conf'
 DEFAULT = {
-    'method': 'generic',
+    'method': 'smtp',
     'from': 'mmf@localhost',
     'to': 'mmf@localhost',
     'sender': '',
