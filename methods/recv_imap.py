@@ -16,7 +16,7 @@ def recv(runtime, config):
     end = start + datetime.timedelta(seconds = config['timeout'])
 
     while runtime['ThreadStopFlag'] is False:
-        data = imap.search(None, '(HEADER X-MMF-TOKEN "{}")'.format(config['token']))
+        data = imap.search(None, '(HEADER X-MMF-TOKEN "{}")'.format(config['token'].val()))
         if len(data[1][0]) != 0:
             imap.close()
             imap.logout()

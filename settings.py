@@ -10,6 +10,7 @@ DEFAULT = {
     'recipients': '',
     'timeout': '20',
     'interval': '5',
+    'size': '',
     'smtp_protocol': 'smtp',
     'smtp_starttls': '',
     'smtp_host': 'localhost',
@@ -32,6 +33,7 @@ def case_check(case):
     if case['smtp_starttls'] != "": case['smtp_starttls'] = True
     if case['smtp_user'] == "": case['smtp_user'] = False
     if case['smtp_password'] == "": case['smtp_password'] = False
+    if case['size'] != "": case['size'] = int(case['size'])
 
     # Set Default
     if case['sender'] == "": case['sender'] = case['from']

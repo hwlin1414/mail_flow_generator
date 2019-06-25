@@ -14,11 +14,10 @@ import recv_ipc
 
 def run(runtime, config):
     try:
-        token = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(16))
-        config['token'] = token
+        config['token'] = mail.Token(**config)
 
         msg = mail.Mail(**config)
-        runtime['log'].info('generate token {}'.format(token))
+        runtime['log'].info('generate token {}'.format(config['token']))
         start = datetime.datetime.now()
 
         # Trying send emails
@@ -30,12 +29,12 @@ def run(runtime, config):
             if 'smtp_expect' in config and config['smtp_expect'] in str(err):
                 for r in err.recipients:
                     msg = err.recipients[r][1].decode('UTF-8')
-                    runtime['log'].info('{} successfully get "{}"'.format(config['name'], msg))
+                    runtime['log'].info('{} successfully get reject "{}"'.format(config['token'], msg))
                 return
             raise
         # If exception expected but not happen
         if 'smtp_expect' in config and config['smtp_expect'] != "":
-            runtime['log'].error('email sent'.format(token))
+            runtime['log'].error('email {} sent'.format(config['token']))
             return
 
         # Regular mail, trying retrieve
@@ -44,9 +43,9 @@ def run(runtime, config):
 
         end = datetime.datetime.now()
         rtt = end - start
-        runtime['log'].info('retrieve token {}, rtt {:.2f}'.format(token, rtt.total_seconds()))
+        runtime['log'].info('retrieve token {}, rtt {:.2f}'.format(config['token'], rtt.total_seconds()))
     except TimeoutError:
-        runtime['log'].error('Email {} Timeout!'.format(token))
+        runtime['log'].error('Email {} Timeout!'.format(config['token']))
     except:
         err = sys.exc_info()
         runtime['log'].error('Unexpected error {}:{}, tb: {}'.format(

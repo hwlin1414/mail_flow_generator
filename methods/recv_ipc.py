@@ -12,7 +12,7 @@ def recv_data(sock):
     return data
 
 def recv(runtime, config):
-    server_address = "{ipc_path}/{token}".format(**config)
+    server_address = "{}/{}".format(config['ipc_path'], config['token'].val())
     try:
         os.unlink(server_address)
     except OSError:
