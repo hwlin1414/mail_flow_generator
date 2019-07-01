@@ -13,18 +13,30 @@ appname = 'MailFlowGenerator'
 def main(mailtext):
     config = settings.read()
     mail = methods.mail.Mail.from_str(mailtext)
-    if mail['X-MMF-TOKEN'] is None:
-        #log.error("mail doesn't have X-MMF-TOKEN")
-        with open('{}/mail'.format(config['DEFAULT']['ipc_path']), 'w') as f:
-            f.write(mailtext)
-            f.write('========\n')
-        os.chmod('{}/mail'.format(config['DEFAULT']['ipc_path']), 0o777)
-        sys.exit(1)
+    token = mail['X-MMF-TOKEN']
+    if token is None:
+        # if this mail is bounced message
+        if mail.get_content_type() == "multipart/report":
+            reason = 'unknown'
+            for part in mail.walk():
+                if part.get_content_type() == "message/rfc822":
+                    p = part.get_payload()[0]
+                    token = p['X-MMF-TOKEN']
+
+        # if still cannot find token
+        if token is None:
+            # not bounced message
+            #log.error("mail doesn't have X-MMF-TOKEN")
+            with open('{}/mail'.format(config['DEFAULT']['ipc_path']), 'w') as f:
+                f.write(mailtext)
+                f.write('========\n')
+            os.chmod('{}/mail'.format(config['DEFAULT']['ipc_path']), 0o777)
+            sys.exit(1)
 
     sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
     try:
-        #log.info("connect to {}/{}".format(config['DEFAULT']['ipc_path'], mail['X-MMF-TOKEN']))
-        sock.connect("{}/{}".format(config['DEFAULT']['ipc_path'], mail['X-MMF-TOKEN']))
+        #log.info("connect to {}/{}".format(config['DEFAULT']['ipc_path'], token))
+        sock.connect("{}/{}".format(config['DEFAULT']['ipc_path'], token))
         sock.sendall(mailtext.encode('UTF-8'))
         sock.close()
     except socket.error as err:

@@ -24,7 +24,7 @@ def recv(runtime, config):
             data = imap.search(None, '(HEADER X-MMF-TOKEN "{}")'.format(config['token'].val()))
             msgs = data[1][0].split()
 
-            if 'imap_reserve' in config:
+            if 'imap_reserve' not in config:
                 imap.store(msgs[0], '+FLAGS', '\\Deleted')
                 imap.expunge()
 

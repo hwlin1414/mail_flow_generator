@@ -35,7 +35,7 @@ def recv(runtime, config):
             connection.close()
             sock.close()
             os.unlink(server_address)
-            return
+            return data
         now = datetime.datetime.now().replace(microsecond = 0)
         if now >= end: break
 

@@ -38,12 +38,16 @@ def run(runtime, config):
             return
 
         # Regular mail, trying retrieve
-        recv_ipc.recv(runtime, config)
+        msg2 = recv_ipc.recv(runtime, config)
+        msg2 = mail.Mail.from_str(msg2)
         if runtime['ThreadStopFlag'] is True: return
 
         end = datetime.datetime.now()
         rtt = end - start
-        runtime['log'].info('retrieve token {}, rtt {:.2f}'.format(config['token'], rtt.total_seconds()))
+        if 'X-MMF-TOKEN' not in msg2:
+            runtime['log'].error('bounced token {}, rtt {:.2f}'.format(config['token'], rtt.total_seconds()))
+        else:
+            runtime['log'].info('retrieve token {}, rtt {:.2f}'.format(config['token'], rtt.total_seconds()))
     except TimeoutError:
         runtime['log'].error('Email {} Timeout!'.format(config['token']))
     except:
