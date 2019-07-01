@@ -10,24 +10,46 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import mail
 import send_smtp
 import smtplib
+import recv_ipc
 
 def run(runtime, config):
     try:
-        token = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(16))
-        config['token'] = token
+        config['token'] = mail.Token(**config)
 
         msg = mail.Mail(**config)
+        runtime['log'].info('generate token {}'.format(config['token']))
+        start = datetime.datetime.now()
+
+        # Trying send emails
         try:
             send_smtp.send(runtime, config, msg.as_string())
-        except smtplib.SMTPRecipientsRefused as errmsg:
-            if config['smtp_except'] in str(errmsg):
-                for r in errmsg.recipients:
-                    msg = errmsg.recipients[r][1].decode('UTF-8')
-                    runtime['log'].info('{} successfully get "{}"'.format(config['name'], msg))
+            if runtime['ThreadStopFlag'] is True: return
+        # Capture known SMTP exceptions
+        except (smtplib.SMTPRecipientsRefused, ) as err:
+            if 'smtp_expect' in config and config['smtp_expect'] in str(err):
+                for r in err.recipients:
+                    msg = err.recipients[r][1].decode('UTF-8')
+                    runtime['log'].info('{} successfully get reject "{}"'.format(config['token'], msg))
                 return
             raise
+        # If exception expected but not happen
+        if 'smtp_expect' in config and config['smtp_expect'] != "":
+            runtime['log'].error('email {} sent'.format(config['token']))
+            return
 
-        runtime['log'].error('email sent'.format(token))
+        # Regular mail, trying retrieve
+        msg2 = recv_ipc.recv(runtime, config)
+        msg2 = mail.Mail.from_str(msg2)
+        if runtime['ThreadStopFlag'] is True: return
+
+        end = datetime.datetime.now()
+        rtt = end - start
+        if 'X-MMF-TOKEN' not in msg2:
+            runtime['log'].error('bounced token {}, rtt {:.2f}'.format(config['token'], rtt.total_seconds()))
+        else:
+            runtime['log'].info('retrieve token {}, rtt {:.2f}'.format(config['token'], rtt.total_seconds()))
+    except TimeoutError:
+        runtime['log'].error('Email {} Timeout!'.format(config['token']))
     except:
         err = sys.exc_info()
         runtime['log'].error('Unexpected error {}:{}, tb: {}'.format(

@@ -13,11 +13,10 @@ import recv_imap
 
 def run(runtime, config):
     try:
-        token = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(16))
-        config['token'] = token
+        config['token'] = mail.Token(**config)
 
         msg = mail.Mail(**config)
-        runtime['log'].info('generate token {}'.format(token))
+        runtime['log'].info('generate token {}'.format(config['token']))
         start = datetime.datetime.now()
 
         send_smtp.send(runtime, config, msg.as_string())
@@ -28,9 +27,9 @@ def run(runtime, config):
 
         end = datetime.datetime.now()
         rtt = end - start
-        runtime['log'].info('retrieve token {}, rtt {:.2f}'.format(token, rtt.total_seconds()))
+        runtime['log'].info('retrieve token {}, rtt {:.2f}'.format(config['token'], rtt.total_seconds()))
     except TimeoutError:
-        runtime['log'].error('Email {} Timeout!'.format(token))
+        runtime['log'].error('Email {} Timeout!'.format(config['token']))
     except:
         err = sys.exc_info()
         runtime['log'].error('Unexpected error {}:{}, tb: {}'.format(

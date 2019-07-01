@@ -16,8 +16,18 @@ def recv(runtime, config):
     end = start + datetime.timedelta(seconds = config['timeout'])
 
     while runtime['ThreadStopFlag'] is False:
-        data = imap.search(None, '(HEADER X-MMF-TOKEN "{}")'.format(config['token']))
-        if len(data[1][0]) != 0:
+        data = imap.search(None, '(HEADER X-MMF-TOKEN "{}")'.format(config['token'].val()))
+        msgs = data[1][0].split()
+        if len(msgs) != 0:
+            imap.select()
+            if 'imap_folder' in config: imap.select(config['imap_folder'])
+            data = imap.search(None, '(HEADER X-MMF-TOKEN "{}")'.format(config['token'].val()))
+            msgs = data[1][0].split()
+
+            if 'imap_reserve' not in config:
+                imap.store(msgs[0], '+FLAGS', '\\Deleted')
+                imap.expunge()
+
             imap.close()
             imap.logout()
             return

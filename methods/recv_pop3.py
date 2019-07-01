@@ -25,8 +25,9 @@ def recv(runtime, config):
             msglist = pop3.retr(i + 1)[1]
             for msgline in msglist:
                 msg += "{}\n".format(msgline.decode('UTF-8'))
-            if config['token'] in msg:
-                #pop3.dele(i)
+            if config['token'].val() in msg:
+                if 'pop3_reserve' not in config:
+                    pop3.dele(i + 1)
                 pop3.quit()
                 return
         pop3.quit()
