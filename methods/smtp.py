@@ -44,8 +44,9 @@ def run(runtime, config):
 
         end = datetime.datetime.now()
         rtt = end - start
-        if 'X-MMF-TOKEN' not in msg2:
-            runtime['log'].error('bounced token {}, rtt {:.2f}'.format(config['token'], rtt.total_seconds()))
+        if mail.Mail.isbounce(msg2) is not None:
+            reason = mail.Mail.isbounce(msg2)
+            runtime['log'].error('bounced token {}, rtt {:.2f} {}'.format(config['token'], rtt.total_seconds(), reason))
         else:
             runtime['log'].info('retrieve token {}, rtt {:.2f}'.format(config['token'], rtt.total_seconds()))
     except TimeoutError:

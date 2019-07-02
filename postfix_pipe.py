@@ -17,7 +17,6 @@ def main(mailtext):
     if token is None:
         # if this mail is bounced message
         if mail.get_content_type() == "multipart/report":
-            reason = 'unknown'
             for part in mail.walk():
                 if part.get_content_type() == "message/rfc822":
                     p = part.get_payload()[0]
