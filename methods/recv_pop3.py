@@ -29,7 +29,7 @@ def recv(runtime, config):
                 if 'pop3_reserve' not in config:
                     pop3.dele(i + 1)
                 pop3.quit()
-                return
+                return msg
         pop3.quit()
 
         now = datetime.datetime.now().replace(microsecond = 0)
