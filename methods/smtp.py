@@ -11,6 +11,7 @@ import mail
 import send_smtp
 import smtplib
 import recv_ipc
+import anal_header
 
 def run(runtime, config):
     try:
@@ -49,6 +50,7 @@ def run(runtime, config):
             runtime['log'].error('bounced token {}, rtt {:.2f} {}'.format(config['token'], rtt.total_seconds(), reason))
         else:
             runtime['log'].info('retrieve token {}, rtt {:.2f}'.format(config['token'], rtt.total_seconds()))
+            anal_header.anal(runtime, config, msg2)
     except TimeoutError:
         runtime['log'].error('Email {} Timeout!'.format(config['token']))
     except:

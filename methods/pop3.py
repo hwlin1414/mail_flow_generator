@@ -10,6 +10,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import mail
 import send_smtp
 import recv_pop3
+import anal_header
 
 def run(runtime, config):
     try:
@@ -22,12 +23,14 @@ def run(runtime, config):
         send_smtp.send(runtime, config, msg.as_string())
         if runtime['ThreadStopFlag'] is True: return
 
-        recv_pop3.recv(runtime, config)
+        msg = recv_pop3.recv(runtime, config)
         if runtime['ThreadStopFlag'] is True: return
 
         end = datetime.datetime.now()
         rtt = end - start
         runtime['log'].info('retrieve token {}, rtt {:.2f}'.format(config['token'], rtt.total_seconds()))
+
+        anal_header.anal(runtime, config, msg)
     except TimeoutError:
         runtime['log'].error('Email {} Timeout!'.format(config['token']))
     except:
