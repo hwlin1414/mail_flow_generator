@@ -12,5 +12,6 @@ def send(runtime, config, msg):
     if config['smtp_starttls'] is True: smtp.starttls()
     if config['smtp_user'] is not False: smtp.login(config['smtp_user'], config['smtp_password'])
 
-    smtp.sendmail(config['sender'], config['recipients'], msg)
+    result = smtp.sendmail(config['sender'], config['recipients'], msg)
     smtp.quit()
+    return result

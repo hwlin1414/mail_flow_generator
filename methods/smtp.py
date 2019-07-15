@@ -23,7 +23,8 @@ def run(runtime, config):
 
         # Trying send emails
         try:
-            send_smtp.send(runtime, config, msg.as_string())
+            send_result = send_smtp.send(runtime, config, msg.as_string())
+            print(send_result)
             if runtime['ThreadStopFlag'] is True: return
         # Capture known SMTP exceptions
         except (smtplib.SMTPRecipientsRefused, ) as err:
