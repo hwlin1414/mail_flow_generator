@@ -5,7 +5,7 @@ import imaplib
 import socket
 
 def recv(runtime, config):
-    socket.setdefaulttimeout(3)
+    socket.setdefaulttimeout(5)
 
     imap = imaplib.IMAP4_SSL(config['imap_host'])
     imap.login(config['imap_user'], config['imap_password'])

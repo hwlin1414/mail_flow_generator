@@ -11,6 +11,7 @@ import mail
 import send_smtp
 import recv_pop3
 import anal_header
+import anal_elk
 
 def run(runtime, config):
     try:
@@ -20,7 +21,8 @@ def run(runtime, config):
         runtime['log'].info('generate token {}'.format(config['token']))
         start = datetime.datetime.now()
 
-        send_smtp.send(runtime, config, msg.as_string())
+        send_result = send_smtp.send(runtime, config, msg.as_string())
+        config['send_result'] = send_result
         if runtime['ThreadStopFlag'] is True: return
 
         msg = recv_pop3.recv(runtime, config)
@@ -31,6 +33,7 @@ def run(runtime, config):
         runtime['log'].info('retrieve token {}, rtt {:.2f}'.format(config['token'], rtt.total_seconds()))
 
         anal_header.anal(runtime, config, msg)
+        anal_elk.anal(runtime, config, msg)
     except TimeoutError:
         runtime['log'].error('Email {} Timeout!'.format(config['token']))
     except:

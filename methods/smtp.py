@@ -12,6 +12,7 @@ import send_smtp
 import smtplib
 import recv_ipc
 import anal_header
+import anal_elk
 
 def run(runtime, config):
     try:
@@ -24,7 +25,7 @@ def run(runtime, config):
         # Trying send emails
         try:
             send_result = send_smtp.send(runtime, config, msg.as_string())
-            print(send_result)
+            config['send_result'] = send_result
             if runtime['ThreadStopFlag'] is True: return
         # Capture known SMTP exceptions
         except (smtplib.SMTPRecipientsRefused, ) as err:
@@ -52,6 +53,7 @@ def run(runtime, config):
         else:
             runtime['log'].info('retrieve token {}, rtt {:.2f}'.format(config['token'], rtt.total_seconds()))
             anal_header.anal(runtime, config, msg2)
+            anal_elk.anal(runtime, config, msg2)
     except TimeoutError:
         runtime['log'].error('Email {} Timeout!'.format(config['token']))
     except:
