@@ -9,8 +9,7 @@ DEF_ELK_WAIT = 10
 re_queueid = re.compile('.*queued as (\w+).*')
 
 def query(config, qid = None, host = None, mid = None):
-    date = datetime.datetime.strftime(datetime.datetime.now(), '%Y.%m.%d')
-    date = '2019.08.12'
+    date = datetime.datetime.strftime(datetime.datetime.utcnow(), '%Y.%m.%d')
     port = config['elk_port'] if 'elk_port' in config else 9200
     url = 'http://{host}:{port}/{index}-{date}/_search'.format(
         host = config['elk_host'], port = port,
