@@ -25,7 +25,7 @@ DEFAULT = {
 def case_check(case):
     # Change Type to int
     case['timeout'] = int(case['timeout'])
-    case['interval'] = int(case['interval'])
+    case['interval'] = float(case['interval'])
     case['loop'] = int(case['loop'])
     case['socket_timeout'] = int(case['socket_timeout'])
 

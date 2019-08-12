@@ -16,16 +16,17 @@ def logger(name, filepath):
     log.setLevel(logging.INFO)
     # append handlers here
     log.addHandler(file(filepath))
+    log.addHandler(syslog(address = ('10.1.2.112', 5614)))
     return log
 
 def setdebug(log):
     log.setLevel(logging.DEBUG)
 
 # Handlers define here
-def syslog(facility = logging.handlers.SysLogHandler.LOG_LOCAL3):
+def syslog(facility = logging.handlers.SysLogHandler.LOG_LOCAL3, address = '/dev/log'):
     log = logging.handlers.SysLogHandler(
         facility = facility,
-        address = '/dev/log'
+        address = address
     )
     formatter = logging.Formatter(fmt=FORMAT, datefmt=DATEFMT)
     log.setFormatter(formatter)

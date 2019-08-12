@@ -75,3 +75,14 @@ class Mail():
         parser = email.parser.Parser()
         mail = parser.parsestr(s)
         return mail
+    @staticmethod
+    def isbounce(mail):
+        reason = None
+        if mail.get_content_type() == "multipart/report":
+            for part in mail.walk():
+                if part.get_content_type() == "message/delivery-status":
+                    p = part.get_payload()[1]
+                    reason = p['Diagnostic-Code']
+        if reason is not None:
+            reason = ' '.join(reason.split())
+        return reason

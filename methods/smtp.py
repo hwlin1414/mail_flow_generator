@@ -11,6 +11,8 @@ import mail
 import send_smtp
 import smtplib
 import recv_ipc
+import anal_header
+import anal_elk
 
 def run(runtime, config):
     try:
@@ -22,7 +24,8 @@ def run(runtime, config):
 
         # Trying send emails
         try:
-            send_smtp.send(runtime, config, msg.as_string())
+            send_result = send_smtp.send(runtime, config, msg.as_string())
+            config['send_result'] = send_result
             if runtime['ThreadStopFlag'] is True: return
         # Capture known SMTP exceptions
         except (smtplib.SMTPRecipientsRefused, ) as err:
@@ -44,10 +47,13 @@ def run(runtime, config):
 
         end = datetime.datetime.now()
         rtt = end - start
-        if 'X-MMF-TOKEN' not in msg2:
-            runtime['log'].error('bounced token {}, rtt {:.2f}'.format(config['token'], rtt.total_seconds()))
+        if mail.Mail.isbounce(msg2) is not None:
+            reason = mail.Mail.isbounce(msg2)
+            runtime['log'].error('bounced token {}, rtt {:.2f} {}'.format(config['token'], rtt.total_seconds(), reason))
         else:
             runtime['log'].info('retrieve token {}, rtt {:.2f}'.format(config['token'], rtt.total_seconds()))
+            anal_header.anal(runtime, config, msg2)
+            anal_elk.anal(runtime, config, msg2)
     except TimeoutError:
         runtime['log'].error('Email {} Timeout!'.format(config['token']))
     except:
