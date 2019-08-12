@@ -3,6 +3,8 @@ import socket
 import select
 import datetime
 
+import mail
+
 def recv_data(sock):
     data = ""
     while True:
@@ -11,7 +13,7 @@ def recv_data(sock):
         data += new_data.decode('UTF-8')
     return data
 
-def recv(runtime, config):
+def recv_ipc(runtime, config):
     server_address = "{}/{}".format(config['ipc_path'], config['token'].val())
     try:
         os.unlink(server_address)
@@ -45,3 +47,14 @@ def recv(runtime, config):
     if runtime['ThreadStopFlag'] is False:
         raise TimeoutError('RECV timeout')
 
+def recv(runtime, config):
+    try:
+        data = recv_ipc(runtime, config)
+        config['mail_msg_recv'] = mail.Mail.from_str(data)
+        reason = mail.Mail.isbounce(config['mail_msg_recv'])
+        if reason is not None:
+            raise RuntimeError(reason)
+    except RuntimeError as err:
+        config['errors'].append(err)
+    except TimeoutError as err:
+        config['errors'].append(err)

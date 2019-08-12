@@ -7,15 +7,25 @@ import email.mime.multipart
 import email.mime.base
 import email.utils
 
-def err(runtime, config, errmsg):
-    msgtext = """
-        {err}
-    """.format(err = errmsg)
+def msgtext(config):
+    errmsg = ''
+    for err in config['errors']:
+        errmsg += 'Unexpected error {}: {}'.format(type(err), str(err))
+
+    return """
+{errmsg}
+""".format(errmsg = errmsg)
+
+def err(runtime, config):
+    if 'errors' not in config or len(config['errors']) == 0: return
+
+    errtitle = 'Mailmon Error {}'.format(config['token'])
 
     msg = email.mime.multipart.MIMEMultipart()
-    text = email.mime.text.MIMEText(msgtext)
+    text = msgtext(config)
+    text = email.mime.text.MIMEText(text)
     msg.attach(text)
-    msg['Subject'] = 'MailMonitorFramework: Error'
+    msg['Subject'] = errtitle
     msg['Message-Id'] = email.utils.make_msgid()
     msg['Date'] = email.utils.formatdate()
     msg['From'] = config['err_sender']

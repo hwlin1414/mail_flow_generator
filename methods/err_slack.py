@@ -39,8 +39,12 @@ def slack_msg(channel, message, detail, isalert = False):
     except Exception as em:
         print('Exception: {}'.format(em))
 
-def err(runtime, config, errmsg):
+def err(runtime, config):
     pass
+    errtitle = 'Mailmon Error {}'.format(config['token'])
+    errmsg = ''
+    slack_msg(config['slack_channel'], errtitle, errmsg)
 
 if __name__ == "__main__":
-    slack_msg('machine-log', 'test', 'test err_slack.py')
+    #slack_msg('machine-log', 'test', 'test err_slack.py')
+    pass

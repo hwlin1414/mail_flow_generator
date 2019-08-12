@@ -4,7 +4,9 @@ import datetime
 import poplib
 import socket
 
-def recv(runtime, config):
+import mail
+
+def recv_pop3(runtime, config):
     socket.setdefaulttimeout(15)
 
     start = datetime.datetime.now().replace(microsecond = 0)
@@ -45,3 +47,10 @@ def recv(runtime, config):
 
     if runtime['ThreadStopFlag'] is False:
         raise TimeoutError('POP3 timeout')
+
+def recv(runtime, config):
+    try:
+        data = recv_pop3(runtime, config)
+        config['mail_msg_recv'] = mail.Mail.from_str(data)
+    except TimeoutError as err:
+        config['errors'].append(err)
