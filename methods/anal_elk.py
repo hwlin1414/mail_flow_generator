@@ -10,7 +10,7 @@ re_queueid = re.compile('.*queued as (\w+).*')
 def query(qid):
     date = datetime.datetime.strftime(datetime.datetime.now(), '%Y.%m.%d')
     url = 'http://{host}:{port}/{index}-{date}/_search'.format(
-        host = '10.1.2.101', port = 9200,
+        host = '10.1.2.106', port = 9200,
         index = 'maillog-postfix', date = date
     )
 

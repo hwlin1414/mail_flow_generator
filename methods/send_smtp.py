@@ -1,5 +1,5 @@
 import sys
-import smtplib
+import mysmtp as smtplib
 
 def send(runtime, config, msg):
     if config['smtp_protocol'] == "smtp":
