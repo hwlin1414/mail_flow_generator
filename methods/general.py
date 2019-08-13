@@ -48,10 +48,12 @@ def run(runtime, config):
     if len(config['errors']) == 0 and config['recv'] != '':
         func = loadfunc(runtime, 'recv', config['recv'])
         func(runtime, config)
-        config['end'] = datetime.datetime.now()
-        rtt = config['end'] - config['start']
-        runtime['log'].info('retrieve token {}, rtt {:.2f}'.format(config['token'], rtt.total_seconds()))
     if runtime['ThreadStopFlag'] is True: return
+    config['end'] = datetime.datetime.now()
+    rtt = config['end'] - config['start']
+    if len(config['errors']) == 0 and config['recv'] != '':
+        runtime['log'].info('retrieve token {}, rtt {:.2f}'
+            .format(config['token'], rtt.total_seconds()))
 
     # anal
     if len(config['errors']) == 0:
