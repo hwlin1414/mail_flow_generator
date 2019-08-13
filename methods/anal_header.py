@@ -9,7 +9,9 @@ re_by = re.compile('.*by (\S+).*')
 re_id = re.compile('.*\sid (\w+).*')
 re_time = re.compile('((?:Sun|Mon|Tue|Wed|Thr|Fri|Sat).*)')
 
-def anal(runtime, config, msg):
+def anal(runtime, config):
+    if 'mail_msg_recv' not in config: return
+    msg = config['mail_msg_recv']
     if isinstance(msg, str):
         msg = mail.Mail.from_str(msg)
     recieveds = msg.get_all('Received')

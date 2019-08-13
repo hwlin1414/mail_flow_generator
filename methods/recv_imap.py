@@ -4,7 +4,9 @@ import datetime
 import imaplib
 import socket
 
-def recv(runtime, config):
+import mail
+
+def recv_imap(runtime, config):
     socket.setdefaulttimeout(5)
 
     imap = imaplib.IMAP4_SSL(config['imap_host'])
@@ -43,3 +45,10 @@ def recv(runtime, config):
     imap.logout()
     if runtime['ThreadStopFlag'] is False:
         raise TimeoutError('IMAP timeout')
+
+def recv(runtime, config):
+    try:
+        data = recv_imap(runtime, config)
+        config['mail_msg_recv'] = mail.Mail.from_str(data)
+    except TimeoutError as err:
+        config['errors'].append(err)

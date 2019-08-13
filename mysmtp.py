@@ -1,4 +1,15 @@
 import smtplib
+from smtplib import SMTPException
+from smtplib import SMTPNotSupportedError
+from smtplib import SMTPServerDisconnected
+from smtplib import SMTPResponseException
+from smtplib import SMTPSenderRefused
+from smtplib import SMTPRecipientsRefused
+from smtplib import SMTPDataError
+from smtplib import SMTPConnectError
+from smtplib import SMTPHeloError
+from smtplib import SMTPAuthenticationError
+
 
 class SMTP(smtplib.SMTP):
     def sendmail(self, from_addr, to_addrs, msg, mail_options=(),
