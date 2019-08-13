@@ -34,5 +34,5 @@ def err(runtime, config):
     smtp = smtplib.SMTP('localhost', 25)
     smtp.ehlo_or_helo_if_needed()
 
-    result = smtp.sendmail(config['err_sender'], config['err_recipients'], msg)
+    result = smtp.sendmail(config['err_sender'], config['err_recipients'], msg.as_string())
     smtp.quit()
