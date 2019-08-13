@@ -64,11 +64,11 @@ def anal(runtime, config):
                     if len(logs) == 0:
                         paths.pop(0)
                         continue
-                    print('pop from elk_path')
+                    #print('pop from elk_path')
                     qid = [logs[0]['_source']['postfix_queueid']]
                 except urllib.error.HTTPError as err:
                     runtime['log'].error('Unexpected error {}: {}'.format(type(err), str(err)))
-            print('trying: qid={}, paths={}'.format(qid, paths))
+            #print('trying: qid={}, paths={}'.format(qid, paths))
             try:
                 logs = query(config, qid = qid[0])
             except urllib.error.HTTPError as err:

@@ -48,7 +48,8 @@ def case_check(case):
 
 def read(path = PATH_DEFAULT):
     parser = configparser.ConfigParser()
-    parser.read(path)
+    path2 = "{}.secret".format(path)
+    parser.read([path, path2])
 
     config = {'cases': {}}
     config['DEFAULT'] = dict(parser['DEFAULT'])

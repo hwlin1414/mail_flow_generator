@@ -39,7 +39,6 @@ class Mail():
                 if hdr_name in config and hdr_value in config:
                     value =  '\n\t'.join(config[hdr_value].split('\n'))
                     self.msg.add_header(config[hdr_name], value)
-        print(self.msg.as_string())
 
     def attach_file(self, path, name = None):
         with open(path, 'rb') as fp:
