@@ -62,8 +62,29 @@ def run(runtime, config):
             func(runtime, config)
             if runtime['ThreadStopFlag'] is True: return
 
-    # err
+    # err log
     if len(config['errors']) != 0:
+        for err in config['errors']:
+            errtitle = 'Unexpected error {}'.format(type(err))
+            errmsg = str(err)
+            runtime['log'].error('{}: {}'.format(errtitle, errmsg))
+    if runtime['ThreadStopFlag'] is True: return
+    # err counter
+    threaddata = runtime['threaddata'][config['name']]
+    if len(config['errors']) == 0:
+        threaddata['lock'].acquire()
+        threaddata['err_counter'] = 0
+        err_counter = 0
+        threaddata['lock'].release()
+    else:
+        threaddata['lock'].acquire()
+        if 'err_counter' not in threaddata:
+            threaddata['err_counter'] = 0
+        threaddata['err_counter'] += 1
+        err_counter = threaddata['err_counter']
+        threaddata['lock'].release()
+    # err
+    if err_counter > 0 and err_counter >= config['err_threshold']:
         for err in config['err'].split():
             func = loadfunc(runtime, 'err', err)
             func(runtime, config)

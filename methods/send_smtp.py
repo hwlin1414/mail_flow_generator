@@ -1,13 +1,15 @@
 import sys
 import mysmtp as smtplib
 
+DEF_SMTP_TIMEOUT = 10
+
 def connect(runtime, config):
     if config['smtp_protocol'] == "smtp":
         port = config['smtp_port'] if 'smtp_port' in config else 25
-        smtp = smtplib.SMTP(config['smtp_host'], port, timeout = 5)
+        smtp = smtplib.SMTP(config['smtp_host'], port, timeout = DEF_SMTP_TIMEOUT)
     elif config['smtp_protocol'] == "smtps":
         port = config['smtp_port'] if 'smtp_port' in config else 465
-        smtp = smtplib.SMTP_SSL(config['smtp_host'], port, timeout = 5)
+        smtp = smtplib.SMTP_SSL(config['smtp_host'], port, timeout = DEF_SMTP_TIMEOUT)
     else:
         raise ValueError("unknown Protocol")
     smtp.ehlo_or_helo_if_needed()

@@ -19,6 +19,7 @@ runtime = {
     # all thread check flags in period
     'CheckFlagPeriod': 1,
     'config': {},
+    'threaddata': {},
 }
 
 def reload(signum, stack_frame):
