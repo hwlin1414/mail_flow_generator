@@ -44,6 +44,8 @@ class Manager(threading.Thread):
         # initial variables
         counter = 0
         interval = datetime.timedelta(seconds = config['interval'])
+        runtime['threaddata'][config['name']] = {}
+        runtime['threaddata'][config['name']]['lock'] = threading.RLock()
         # manager started at
         start = datetime.datetime.now().replace(microsecond = 0)
         # next generator start

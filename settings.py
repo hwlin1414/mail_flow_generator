@@ -7,7 +7,7 @@ DEFAULT = {
     'send': 'smtp',
     'recv': 'ipc',
     'anal': '',
-    'err': 'log',
+    'err': '',
     'loop': '1',
     'socket_timeout': '10',
     'socket_path': '/tmp/',
@@ -19,6 +19,7 @@ DEFAULT = {
     'smtp_host': 'localhost',
     'smtp_user': '',
     'smtp_password': '',
+    'err_threshold': '1',
 }
 
 def case_check(case):
@@ -40,6 +41,7 @@ def case_check(case):
     case['loop'] = int(case['loop'])
     case['socket_timeout'] = int(case['socket_timeout'])
     if 'mail_size' in case: case['mail_size'] = int(case['mail_size'])
+    if 'err_threshold' in case: case['err_threshold'] = int(case['err_threshold'])
 
     # Change Type to List
     case['smtp_recipients'] = [ x.strip() for x in case['smtp_recipients'].split(',') ]
