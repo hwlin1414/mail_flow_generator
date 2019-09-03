@@ -34,7 +34,7 @@ def send(runtime, config):
         config['send_result'] = result
         if 'smtp_expect' in config:
             raise RuntimeError('expect error "{}" but message sent.'.format(config['smtp_expect']))
-    except (smtplib.SMTPServerDisconnected, ) as err:
+    except (smtplib.SMTPConnectError, smtplib.SMTPServerDisconnected) as err:
         config['errors'].append(err)
     except (smtplib.SMTPRecipientsRefused, ) as err:
         if 'smtp_expect' in config and config['smtp_expect'] in str(err):
