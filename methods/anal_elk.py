@@ -85,7 +85,7 @@ def anal(runtime, config):
                 if len(temp_qid) > 0: qid = temp_qid
                 print("\t{}: {}".format(logsource, log['_source']['message']))
             if len(paths) > 0:
-                if logsource == paths[0]:
+                if paths[0] in logsource:
                     paths.pop(0)
                 #else:
                 #    print("\telk_path expect: {}, but mail is now {}".format(paths, logsource))
