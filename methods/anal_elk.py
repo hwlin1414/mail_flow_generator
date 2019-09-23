@@ -7,6 +7,7 @@ import time
 
 DEF_ELK_WAIT = 10
 re_queueid = re.compile('.*queued as (\w+).*')
+re_error = re.compile('.*status=(?:deferred|bounced) \((.+)\).*')
 
 def query(config, qid = None, host = None, mid = None):
     date = datetime.datetime.strftime(datetime.datetime.utcnow(), '%Y.%m.%d')
@@ -52,8 +53,7 @@ def anal(runtime, config):
 
     print("=== elk: {} ===".format(config['token']))
     send_result = config['send_result'][1].decode('UTF-8')
-    #qid = re_queueid.findall(send_result)
-    qid = []
+    qid = re_queueid.findall(send_result)
     if 'elk_path' in config:
         paths = config['elk_path'].split()
         while True:
@@ -77,12 +77,15 @@ def anal(runtime, config):
             qid = []
             logsource = None
             for log in logs:
+                err = re_error.findall(json.dumps(log))
+                if len(err) > 0: config['errors'].append(err[0])
+
                 logsource = log['_source']['logsource']
                 temp_qid = re_queueid.findall(json.dumps(log))
                 if len(temp_qid) > 0: qid = temp_qid
                 print("\t{}: {}".format(logsource, log['_source']['message']))
             if len(paths) > 0:
-                if logsource == paths[0]:
+                if paths[0] in logsource:
                     paths.pop(0)
                 #else:
                 #    print("\telk_path expect: {}, but mail is now {}".format(paths, logsource))
@@ -96,6 +99,9 @@ def anal(runtime, config):
                 logs = []
             qid = []
             for log in logs:
+                err = re_error.findall(json.dumps(log))
+                if len(err) > 0: config['errors'].append(err[0])
+
                 temp_qid = re_queueid.findall(json.dumps(log))
                 if len(temp_qid) > 0: qid = temp_qid
                 print("\t{}: {}".format(log['_source']['logsource'], log['_source']['message']))

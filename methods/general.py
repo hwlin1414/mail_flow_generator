@@ -56,7 +56,7 @@ def run(runtime, config):
             .format(config['token'], rtt.total_seconds()))
 
     # anal
-    if len(config['errors']) == 0:
+    if len(config['errors']) == 0 or 'anal_error' in config:
         for anal in config['anal'].split():
             func = loadfunc(runtime, 'anal', anal)
             func(runtime, config)
