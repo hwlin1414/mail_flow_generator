@@ -28,7 +28,6 @@ def slack_msg(channel, message, detail, isalert = False):
         "icon_emoji": ":{}:".format(img),
     }
     data = json.dumps(payload)
-    print(data)
     try:
         req = urllib.request.Request(
             url,
@@ -40,11 +39,14 @@ def slack_msg(channel, message, detail, isalert = False):
         print('Exception: {}'.format(em))
 
 def err(runtime, config):
-    pass
-    errtitle = 'Mailmon Error {}'.format(config['token'])
+    if 'errors' not in config or len(config['errors']) == 0: return
+
+    errtitle = 'Mail Error {}'.format(config['token'])
     errmsg = ''
-    slack_msg(config['slack_channel'], errtitle, errmsg)
+    for x in config['errors']:
+        errmsg += 'Unexpected error {}: {}\n'.format(type(x), x)
+    slack_msg(config['slack_channel'], errtitle, errmsg, isalert = True)
 
 if __name__ == "__main__":
-    #slack_msg('machine-log', 'test', 'test err_slack.py')
+    #slack_msg('machine-log', 'test', 'test err_slack.py', isalert = True)
     pass
