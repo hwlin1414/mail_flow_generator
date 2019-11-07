@@ -44,7 +44,7 @@ def query(config, qid = None, host = None, mid = None):
     data = json.loads(response)
     return data['hits']['hits']
 
-def anal(runtime, config):
+def analysis(runtime, config):
     waittimes = config['elk_wait'] if 'elk_wait' in config else DEF_ELK_WAIT
     while runtime['ThreadStopFlag'] is False:
         if waittimes == 0: break
@@ -77,7 +77,7 @@ def anal(runtime, config):
             qid = []
             logsource = None
             for log in logs:
-                err = re_error.findall(json.dumps(log))
+                err = re_error.findall(log['_source']['message'])
                 if len(err) > 0: config['errors'].append(err[0])
 
                 logsource = log['_source']['logsource']
@@ -99,12 +99,15 @@ def anal(runtime, config):
                 logs = []
             qid = []
             for log in logs:
-                err = re_error.findall(json.dumps(log))
+                err = re_error.findall(log['_source']['message'])
                 if len(err) > 0: config['errors'].append(err[0])
 
                 temp_qid = re_queueid.findall(json.dumps(log))
                 if len(temp_qid) > 0: qid = temp_qid
-                print("\t{}: {}".format(log['_source']['logsource'], log['_source']['message']))
+                if 'logsource' in log['_source']:
+                    print("\t{}: {}".format(log['_source']['logsource'], log['_source']['message']))
+                else:
+                    print("\t{}".format(log['_source']['message']))
 
 if __name__ == "__main__":
-    anal({}, {'send_result': (250, b'2.0.0 Ok: queued as 74D1B2D53D8', {}), }, '')
+    analysis({}, {'send_result': (250, b'2.0.0 Ok: queued as 74D1B2D53D8', {}), }, '')
