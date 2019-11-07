@@ -26,16 +26,16 @@ def main(mailtext):
         if token is None:
             # not bounced message
             #log.error("mail doesn't have X-MMF-TOKEN")
-            with open('{}/mail'.format(config['DEFAULT']['ipc_path']), 'w') as f:
+            with open('{}/mail'.format(config['DEFAULT']['udc_path']), 'w') as f:
                 f.write(mailtext)
                 f.write('========\n')
-            os.chmod('{}/mail'.format(config['DEFAULT']['ipc_path']), 0o777)
+            os.chmod('{}/mail'.format(config['DEFAULT']['udc_path']), 0o777)
             sys.exit(1)
 
     sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
     try:
-        #log.info("connect to {}/{}".format(config['DEFAULT']['ipc_path'], token))
-        sock.connect("{}/{}".format(config['DEFAULT']['ipc_path'], token))
+        #log.info("connect to {}/{}".format(config['DEFAULT']['udc_path'], token))
+        sock.connect("{}/{}".format(config['DEFAULT']['udc_path'], token))
         sock.sendall(mailtext.encode('UTF-8'))
         sock.close()
     except socket.error as err:
