@@ -13,8 +13,8 @@ def recv_data(sock):
         data += new_data.decode('UTF-8')
     return data
 
-def recv_ipc(runtime, config):
-    server_address = "{}/{}".format(config['ipc_path'], config['token'].val())
+def recv_udc(runtime, config):
+    server_address = "{}/{}".format(config['udc_path'], config['token'].val())
     try:
         os.unlink(server_address)
     except OSError:
@@ -49,7 +49,7 @@ def recv_ipc(runtime, config):
 
 def recv(runtime, config):
     try:
-        data = recv_ipc(runtime, config)
+        data = recv_udc(runtime, config)
         config['mail_msg_recv'] = mail.Mail.from_str(data)
         reason = mail.Mail.isbounce(config['mail_msg_recv'])
         if reason is not None:
