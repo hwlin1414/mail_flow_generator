@@ -55,10 +55,10 @@ def run(runtime, config):
         runtime['log'].info('retrieve token {}, rtt {:.2f}'
             .format(config['token'], rtt.total_seconds()))
 
-    # anal
-    if len(config['errors']) == 0 or 'anal_error' in config:
-        for anal in config['anal'].split():
-            func = loadfunc(runtime, 'anal', anal)
+    # analysis
+    if len(config['errors']) == 0 or 'analysis_error' in config:
+        for analysis in config['analysis'].split():
+            func = loadfunc(runtime, 'analysis', analysis)
             func(runtime, config)
             if runtime['ThreadStopFlag'] is True: return
 

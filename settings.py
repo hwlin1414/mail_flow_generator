@@ -6,7 +6,7 @@ DEFAULT = {
     'method': 'general',
     'send': 'smtp',
     'recv': 'ipc',
-    'anal': '',
+    'analysis': '',
     'err': '',
     'loop': '1',
     'socket_timeout': '10',

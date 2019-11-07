@@ -9,7 +9,7 @@ re_by = re.compile('.*by (\S+).*')
 re_id = re.compile('.*\sid (\w+).*')
 re_time = re.compile('((?:Sun|Mon|Tue|Wed|Thr|Fri|Sat).*)')
 
-def anal(runtime, config):
+def analysis(runtime, config):
     if 'mail_msg_recv' not in config: return
     msg = config['mail_msg_recv']
     if isinstance(msg, str):
@@ -39,4 +39,4 @@ def anal(runtime, config):
 
 if __name__ == "__main__":
     mailtext = ''.join(sys.stdin.readlines())
-    anal({}, {'token': 'stdin'}, mailtext)
+    analysis({}, {'token': 'stdin'}, mailtext)

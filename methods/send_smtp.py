@@ -34,14 +34,18 @@ def send(runtime, config):
         config['send_result'] = result
         if 'smtp_expect' in config:
             raise RuntimeError('expect error "{}" but message sent.'.format(config['smtp_expect']))
-    except (smtplib.SMTPConnectError, smtplib.SMTPAuthenticationError, smtplib.SMTPServerDisconnected) as err:
-        config['errors'].append(err)
     except (smtplib.SMTPRecipientsRefused, ) as err:
         if 'smtp_expect' in config and config['smtp_expect'] in str(err):
             for r in err.recipients:
                 msg = err.recipients[r][1].decode('UTF-8')
                 runtime['log'].info('{} successfully get reject "{}"'.format(config['token'], msg))
             return
+        config['errors'].append(err)
+    except (smtplib.SMTPConnectError,
+        smtplib.SMTPAuthenticationError,
+        smtplib.SMTPServerDisconnected,
+        smtplib.SMTPException,
+    ) as err:
         config['errors'].append(err)
     except RuntimeError as err:
         config['errors'].append(err)
