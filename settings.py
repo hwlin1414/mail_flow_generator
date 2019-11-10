@@ -5,7 +5,7 @@ PATH_DEFAULT = os.path.dirname(os.path.abspath(__file__)) + '/mfg.conf'
 DEFAULT = {
     'method': 'general',
     'send': 'smtp',
-    'recv': 'udc',
+    'recv': 'uds',
     'analysis': '',
     'err': '',
     'loop': '1',
