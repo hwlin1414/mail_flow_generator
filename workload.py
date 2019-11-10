@@ -104,7 +104,8 @@ class Generator(threading.Thread):
         # except for all unexpected error and log
         except:
             err = sys.exc_info()
-            runtime['log'].error('Unexpected error {}:{}, tb: {}'.format(
+            runtime['log'].error('{} Unexpected error {}:{}, tb: {}'.format(
+                config['name'],
                 err[0],
                 err[1],
                 ','.join(traceback.format_tb(err[2]))

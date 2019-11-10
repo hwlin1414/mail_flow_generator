@@ -65,7 +65,7 @@ def run(runtime, config):
     # err log
     if len(config['errors']) != 0:
         for err in config['errors']:
-            errtitle = 'Unexpected error {}'.format(type(err))
+            errtitle = '{} Unexpected error {}'.format(config['token'], type(err))
             errmsg = str(err)
             runtime['log'].error('{}: {}'.format(errtitle, errmsg))
     if runtime['ThreadStopFlag'] is True: return
