@@ -23,11 +23,14 @@ def run(runtime):
 
 class Manager(threading.Thread):
     def __init__(self, runtime, config, *args, **kwargs):
+        # Parent class init
         threading.Thread.__init__(self, name = config['name'], *args, **kwargs)
+        # self variable
         self._runtime = runtime
         self._config = config
 
     def run(self):
+        # set self variable
         runtime = self._runtime
         config = self._config
         runtime['log'].debug("Manager {} Start".format(config['name']))
@@ -83,13 +86,17 @@ class Manager(threading.Thread):
 
 class Generator(threading.Thread):
     def __init__(self, runtime, config, method, *args, **kwargs):
+        # Create thread name
         name = "{}-{}".format(config['name'], config['threadnum'])
+        # parent thread init
         threading.Thread.__init__(self, name = name, *args, **kwargs)
+        # set self variable
         self._runtime = runtime
         self._config = config
         self._method = method
 
     def run(self):
+        # read self variable
         runtime = self._runtime
         config = self._config
         method = self._method
@@ -103,8 +110,10 @@ class Generator(threading.Thread):
             function(runtime, config)
         # except for all unexpected error and log
         except:
+            # error handling
             err = sys.exc_info()
-            runtime['log'].error('Unexpected error {}:{}, tb: {}'.format(
+            runtime['log'].error('{} Unexpected error {}:{}, tb: {}'.format(
+                config['name'],
                 err[0],
                 err[1],
                 ','.join(traceback.format_tb(err[2]))

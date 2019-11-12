@@ -7,9 +7,11 @@ import logger
 import settings
 import workload
 
+# Application name in Log
 appname = 'MailFlowGenerator'
 # log instance, we need to log something in signal handler
 log = logger.logger(appname, os.path.dirname(os.path.abspath(__file__)) + '/app.log')
+# global variable
 runtime = {
     'log': log,
     # stop all threads
@@ -22,10 +24,12 @@ runtime = {
     'threaddata': {},
 }
 
+# reload program
 def reload(signum, stack_frame):
     log.warning('signal {} recieved, reload'.format(signum))
     runtime['ThreadStopFlag'] = True
 
+# stop program
 def shutdown(signum, stack_frame):
     log.warning('signal {} recieved, shutdown'.format(signum))
     runtime['ThreadStopFlag'] = True
@@ -57,8 +61,11 @@ def main(config_path, debug):
     runtime['log'].info("Program exited")
 
 if __name__ == "__main__":
+    # Parse arguments
     parser = argparse.ArgumentParser(description = '{}'.format(appname))
     parser.add_argument('-d', '--debug', action='store_true', help='Debug mode')
     parser.add_argument('-c', '--config', default=settings.PATH_DEFAULT, help='Config file path')
     args = parser.parse_args()
+
+    # Run main program
     main(args.config, args.debug)

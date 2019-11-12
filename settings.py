@@ -1,11 +1,13 @@
 import os
 import configparser
 
+# Default config path
 PATH_DEFAULT = os.path.dirname(os.path.abspath(__file__)) + '/mfg.conf'
+# Default Value
 DEFAULT = {
     'method': 'general',
     'send': 'smtp',
-    'recv': 'udc',
+    'recv': 'uds',
     'analysis': '',
     'err': '',
     'loop': '1',
@@ -22,6 +24,7 @@ DEFAULT = {
     'err_threshold': '1',
 }
 
+# check value and types
 def case_check(case):
     # Set Default
     if 'smtp_sender' not in case or case['smtp_sender'] == "":
@@ -49,12 +52,14 @@ def case_check(case):
         case['err_recipients'] = [ x.strip() for x in case['err_recipients'].split(',') ]
 
 def read(path = PATH_DEFAULT):
+    # Read config and config.secret
     parser = configparser.ConfigParser()
     path2 = "{}.secret".format(path)
     parser.read([path, path2])
 
     config = {'cases': {}}
     config['DEFAULT'] = dict(parser['DEFAULT'])
+    # Parse config section
     for section in parser.sections():
         case = {}
         case.update(DEFAULT)
