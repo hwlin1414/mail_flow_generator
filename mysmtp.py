@@ -106,7 +106,9 @@ class SMTP(smtplib.SMTP):
             # the server refused all our recipients
             self._rset()
             raise SMTPRecipientsRefused(senderrs)
+        # === Just add this line
         (code, resp) = self.data(msg)
+        # === Just add this line
         if code != 250:
             if code == 421:
                 self.close()

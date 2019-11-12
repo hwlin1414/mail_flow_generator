@@ -1,11 +1,12 @@
 import logging
 import logging.handlers
 
-# format consts
+# format constants
 #FORMAT = '%(name)s %(threadName)s (%(filename)s:%(lineno)s %(funcName)s): [%(levelname)s] %(message)s'
 #FORMAT = '%(name)s %(threadName)s: [%(levelname)s] %(message)s'
 FORMAT = '[%(levelname)s] %(message)s'
 FORMAT_TS = "%(asctime)s {}".format(FORMAT)
+# datetime format
 DATEFMT = "%Y-%m-%d %H:%M:%S"
 
 logging.basicConfig(format=FORMAT_TS, datefmt=DATEFMT)
@@ -13,6 +14,7 @@ logging.basicConfig(format=FORMAT_TS, datefmt=DATEFMT)
 # Formatter
 
 def logger(name, filepath):
+    # logger init
     log = logging.getLogger(name)
     log.setLevel(logging.INFO)
     # append handlers here
@@ -29,6 +31,7 @@ def syslog(facility = logging.handlers.SysLogHandler.LOG_LOCAL3, address = '/dev
         facility = facility,
         address = address
     )
+    # set log format
     formatter = logging.Formatter(fmt=FORMAT, datefmt=DATEFMT)
     log.setFormatter(formatter)
     return log
@@ -37,6 +40,7 @@ def file(filename):
     log = logging.handlers.WatchedFileHandler(
         filename = filename
     )
+    # set log format
     formatter_ts = logging.Formatter(fmt=FORMAT_TS, datefmt=DATEFMT)
     log.setFormatter(formatter_ts)
     return log
